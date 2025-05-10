@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <random>
 
 #include "glad/glad.h"
 
@@ -16,7 +15,7 @@ Boid::~Boid() {
 
 }
 
-void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids) {
+void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids, std::vector<Obstacle*>* obstacles) {
     Vector2 window_dimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
     Vector2 goal = (mouse_pos / window_dimensions * 2 - Vector2::One()) * Vector2(1.0f, -1.0f);
 
@@ -121,6 +120,8 @@ void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2&
 
     Vector2 tail1 = front + tail_length * Vector2(std::cos(t1o), std::sin(t1o));
     Vector2 tail2 = front + tail_length * Vector2(std::cos(t2o), std::sin(t2o));
+
+    std::cout << offset << std::endl;
 
     front += offset;
     back += offset;

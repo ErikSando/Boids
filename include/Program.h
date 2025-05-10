@@ -18,7 +18,7 @@ class Program {
     ~Program();
 
     void InitWindow(const char* title, int width, int height);
-    void InitBoids(int initial_quantity, Shader& boid_shader);
+    void InitBoids(int initial_boids, int initial_obstacles, Shader& boid_shader, Shader& obstacle_shader);
 
     void Run();
     void Destroy();

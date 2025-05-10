@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+
+#include "Obstacle.h"
 #include "Vector2.h"
 
 #define BOID_RANGE 0.8
@@ -26,7 +29,7 @@ class Boid {
     Boid();
     ~Boid();
 
-    void UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids);
+    void UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids, std::vector<Obstacle*>* obstacles);
     void Update(const float delta);
     void Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2& offset);
 };

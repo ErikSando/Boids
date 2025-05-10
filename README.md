@@ -1,2 +1,2 @@
 # Boids
- I was challenged to create a boids simulation so I gave it a shot.
+ A 2D boids simulation made using C++ and OpenGL (GLFW and Glad).

@@ -11,9 +11,10 @@ int main() {
     Program program;
     program.InitWindow("2D Boid Simulation", WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    Shader boid_shader("assets/shaders/boid_vertex_shader.glsl", "assets/shaders/boid_fragment_shader.glsl");
+    Shader boid_shader("assets/shaders/boid_vs.glsl", "assets/shaders/boid_fs.glsl");
+    Shader obstacle_shader("assets/shaders/obstacle_vs.glsl", "assets/shaders/obstacle_fs.glsl");
 
-    program.InitBoids(30, boid_shader);
+    program.InitBoids(20, 5, boid_shader, obstacle_shader);
     program.Run();
 
     return 0;

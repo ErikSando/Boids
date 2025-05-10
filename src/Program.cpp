@@ -50,13 +50,13 @@ void Program::InitWindow(const char* title, int width, int height) {
     window_setup = true;
 }
 
-void Program::InitBoids(int initial_quantity, Shader& boid_shader) {
+void Program::InitBoids(int initial_boids, int initial_obstacles, Shader& boid_shader, Shader& obstacle_shader) {
     if (boids_setup) {
         std::cout << "Boids already initialised" << std::endl;
         return;
     }
 
-    boid_handler = new BoidHandler(initial_quantity, &boid_shader);
+    boid_handler = new BoidHandler(initial_boids, initial_obstacles, &boid_shader, &obstacle_shader);
     boids_setup = true;
 }
 
@@ -132,14 +132,14 @@ void Program::Update(const float delta) {
 
     Vector2 mouse_pos(mouseX, mouseY);
 
-    boid_handler->UpdateBoids(delta, mouse_pos);
+    boid_handler->Update(delta, mouse_pos);
 }
 
 void Program::Render() {
     glClearColor(0.4f, 0.8f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    boid_handler->RenderBoids();
+    boid_handler->Render();
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
