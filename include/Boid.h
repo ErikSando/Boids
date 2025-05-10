@@ -2,8 +2,11 @@
 
 #include "Vector2.h"
 
-#define BOID_RANGE 0.1
+#define BOID_RANGE 0.3
 #define MAX_SPEED 0.2
+#define ACCELERATION_MULTIPLIER 0.2
+#define COHESION_THRESHOLD 0.45
+#define ALIGNMENT_THRESHOLD 0.35
 
 class Boid {
     public:
@@ -19,7 +22,7 @@ class Boid {
     Boid();
     ~Boid();
 
-    void UpdateVelocity(const float delta, std::vector<Boid*>* boids);
+    void UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids);
     void Update(const float delta);
     void Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2& offset);
 };

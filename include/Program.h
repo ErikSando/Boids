@@ -8,6 +8,9 @@
 #include "BoidHandler.h"
 #include "Input.h"
 
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 600
+
 class Program {
     public:
 
@@ -28,8 +31,6 @@ class Program {
     InputHandler* input;
     BoidHandler* boid_handler;
 
-    std::vector<Boid*> boids;
-
     bool window_setup = false;
     bool boids_setup = false;
     bool running = false;
@@ -38,4 +39,5 @@ class Program {
     void Render();
 
     static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+    static void CursorPositionCallback(GLFWwindow* window, double x, double y);
 };

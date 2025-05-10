@@ -9,7 +9,7 @@ int main() {
     srand(time(nullptr));
 
     Program program;
-    program.InitWindow("2D Boid Simulation", 600, 600);
+    program.InitWindow("2D Boid Simulation", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     Shader boid_shader("assets/shaders/boid_vertex_shader.glsl", "assets/shaders/boid_fragment_shader.glsl");
 

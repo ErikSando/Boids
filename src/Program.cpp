@@ -35,7 +35,8 @@ void Program::InitWindow(const char* title, int width, int height) {
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(window, Program::FramebufferSizeCallback);
+    glfwSetCursorPosCallback(window, Program::CursorPositionCallback);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cerr << "Failed to initialise GLAD" << std::endl;
@@ -126,7 +127,12 @@ void Program::Run() {
 }
 
 void Program::Update(const float delta) {
-    boid_handler->UpdateBoids(delta);
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);
+
+    Vector2 mouse_pos(mouseX, mouseY);
+
+    boid_handler->UpdateBoids(delta, mouse_pos);
 }
 
 void Program::Render() {
@@ -141,4 +147,9 @@ void Program::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     glGetIntegerv(GL_VIEWPORT, viewport_info);
 
     glViewport(viewport_info[0], viewport_info[1], width, height);
+}
+
+void Program::CursorPositionCallback(GLFWwindow* window, double x, double y) {
+    //mouse_pos.x = x;
+    //mouse_pos.y = y;
 }

@@ -39,9 +39,9 @@ void BoidHandler::CreateBoids(int quantity) {
     }
 }
 
-void BoidHandler::UpdateBoids(const float delta) {
+void BoidHandler::UpdateBoids(const float delta, Vector2& mouse_pos) {
     for (Boid* boid : boids) {
-        boid->UpdateVelocity(delta, &boids);
+        boid->UpdateVelocity(delta, mouse_pos, &boids);
     }
 
     offset.x = 0;
@@ -49,7 +49,7 @@ void BoidHandler::UpdateBoids(const float delta) {
 
     for (Boid* boid : boids) {
         boid->Update(delta);
-        offset -= boid->position;
+        //offset -= boid->position;
     }
 
     offset /= boids.size();

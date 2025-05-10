@@ -20,6 +20,6 @@ class BoidHandler {
 
     void CreateBoids(int quantity = 1);
     void ClearBoids();
-    void UpdateBoids(const float delta);
+    void UpdateBoids(const float delta, Vector2& mouse_pos);
     void RenderBoids();
 };
