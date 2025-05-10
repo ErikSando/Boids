@@ -137,5 +137,8 @@ void Program::Render() {
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
+    int viewport_info[4];
+    glGetIntegerv(GL_VIEWPORT, viewport_info);
+
+    glViewport(viewport_info[0], viewport_info[1], width, height);
 }

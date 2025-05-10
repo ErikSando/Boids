@@ -44,9 +44,15 @@ void BoidHandler::UpdateBoids(const float delta) {
         boid->UpdateVelocity(delta, &boids);
     }
 
+    offset.x = 0;
+    offset.y = 0;
+
     for (Boid* boid : boids) {
         boid->Update(delta);
+        offset -= boid->position;
     }
+
+    offset /= boids.size();
 }
 
 void BoidHandler::RenderBoids() {
@@ -55,6 +61,6 @@ void BoidHandler::RenderBoids() {
     shader->Use();
 
     for (Boid* boid : boids) {
-        boid->Render(VAO, VBO, EBO);
+        boid->Render(VAO, VBO, EBO, offset);
     }
 }

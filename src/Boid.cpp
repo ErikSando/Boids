@@ -55,7 +55,7 @@ void Boid::Update(const float delta) {
     position += velocity * delta;
 }
 
-void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO) {
+void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2& offset) {
     Vector2 front = position - 0.8 * length * Vector2(std::cos(orientation), std::sin(orientation));
     Vector2 back = position + 0.2 * length * Vector2(std::cos(orientation), std::sin(orientation));
 
@@ -64,6 +64,11 @@ void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO) {
 
     Vector2 tail1 = front + tail_length * Vector2(std::cos(t1o), std::sin(t1o));
     Vector2 tail2 = front + tail_length * Vector2(std::cos(t2o), std::sin(t2o));
+
+    front += offset;
+    back += offset;
+    tail1 += offset;
+    tail2 += offset;
 
     float vertices[] = {
         front.x, front.y, 1.0f,

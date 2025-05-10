@@ -14,6 +14,8 @@ class BoidHandler {
     std::vector<Boid*> boids;
     Shader* shader;
 
+    Vector2 offset;
+
     unsigned int VAO, VBO, EBO;
 
     void CreateBoids(int quantity = 1);

@@ -1,2 +1,2 @@
-# BoidSimulation
- I was challenged to make one of these so I gave it a shot.
+# Boids
+ I was challenged to make a boids simulation so I gave it a shot.

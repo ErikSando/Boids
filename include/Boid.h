@@ -21,5 +21,5 @@ class Boid {
 
     void UpdateVelocity(const float delta, std::vector<Boid*>* boids);
     void Update(const float delta);
-    void Render(unsigned int VAO, unsigned int VBO, unsigned int EBO);
+    void Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2& offset);
 };
