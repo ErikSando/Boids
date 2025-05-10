@@ -4,15 +4,27 @@
 #include "Program.h"
 #include "Time.h"
 
-Program::Program(const char* title, int width, int height) {
+Program::Program() {
     if (!glfwInit()) {
         std::cerr << "Failed to initialise GLFW" << std::endl;
+        return;
+    }
+}
+
+Program::~Program() {
+    Destroy();
+}
+
+void Program::InitWindow(const char* title, int width, int height) {
+    if (window_setup) {
+        std::cout << "Window already created" << std::endl;
         return;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     
@@ -34,23 +46,34 @@ Program::Program(const char* title, int width, int height) {
     
     input = new InputHandler(window);
 
-    setup = true;
+    window_setup = true;
 }
 
-Program::~Program() {
-    Destroy();
+void Program::InitBoids(int initial_quantity, Shader& boid_shader) {
+    if (boids_setup) {
+        std::cout << "Boids already initialised" << std::endl;
+        return;
+    }
+
+    boid_handler = new BoidHandler(initial_quantity, &boid_shader);
+    boids_setup = true;
 }
 
 void Program::Destroy() {
     running = false;
 
-    delete input;
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    if (boids_setup) delete boid_handler;
+
+    if (window_setup) {
+        delete input;
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
 }
 
 void Program::Run() {
-    if (!setup) {
+    if (!window_setup || !boids_setup) {
         return;
     }
 
@@ -63,6 +86,9 @@ void Program::Run() {
     const float frame_multiplier = 1.0f / fps_output_interval;
 
     int frames = 0;
+
+    // wireframe mode
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (running) {
         if (glfwWindowShouldClose(window)) {
@@ -100,11 +126,14 @@ void Program::Run() {
 }
 
 void Program::Update(const float delta) {
-
+    boid_handler->UpdateBoids(delta);
 }
 
 void Program::Render() {
+    glClearColor(0.4f, 0.8f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
+    boid_handler->RenderBoids();
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow* window, int width, int height) {

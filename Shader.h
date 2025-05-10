@@ -12,7 +12,7 @@ class Shader {
     Shader(const char* vertex_shader_path, const char* fragment_shader_path);
 
     void Use();
-    void Clean();
+    void CleanUp();
 
     void SetBool(const std::string& name, bool value);
     void SetInt(const std::string& name, int value);

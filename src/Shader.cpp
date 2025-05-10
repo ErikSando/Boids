@@ -84,7 +84,7 @@ void Shader::Use() {
     glUseProgram(ID);
 }
 
-void Shader::CleanUp() {
+void Shader::Clean() {
     glDeleteProgram(ID);
 }
 

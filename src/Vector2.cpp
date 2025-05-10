@@ -51,6 +51,13 @@ bool operator!=(const Vector2& v1, const Vector2& v2) {
     return (v1.x != v2.x || v1.y != v2.y);
 }
 
+Vector2 operator*(const float n, const Vector2& v) {
+    Vector2 resultant;
+    resultant.x = v.x * n;
+    resultant.y = v.y * n;
+    return resultant;
+}
+
 Vector2 operator*(const Vector2& v, const float n) {
     Vector2 resultant;
     resultant.x = v.x * n;
