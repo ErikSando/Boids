@@ -2,18 +2,22 @@
 
 #include "Vector2.h"
 
-#define BOID_RANGE 0.3
+#define BOID_RANGE 0.8
+#define ARRIVAL_RADIUS 0.3
+#define SEPERATION_THRESHOLD 0.2
 #define MAX_SPEED 0.2
-#define ACCELERATION_MULTIPLIER 0.2
-#define COHESION_THRESHOLD 0.45
-#define ALIGNMENT_THRESHOLD 0.35
+#define MAX_STEER 0.025
+#define SEEK_STRENGTH 0.5
+#define SEPERATION_STRENGTH 0.0015
+#define ALIGNMENT_STRENGTH 0.001
+#define COHESION_STRENGTH 0.001
 
 class Boid {
     public:
 
     Vector2 position;
     Vector2 velocity;
-    Vector2 acceleration;
+    Vector2 steer;
 
     float orientation = 0.0f;
     float length = 0.03f;

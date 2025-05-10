@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <random>
 
 #include "glad/glad.h"
@@ -17,14 +18,13 @@ Boid::~Boid() {
 
 void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boid*>* boids) {
     Vector2 window_dimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
-    Vector2 target(mouse_pos.x / window_dimensions.x * 2.0 - 1.0, -mouse_pos.y / window_dimensions.y * 2.0 + 1.0);
+    Vector2 goal = (mouse_pos / window_dimensions * 2 - Vector2::One()) * Vector2(1.0f, -1.0f);
 
     std::vector<Boid*> proximal_boids;
-    Vector2 avg_pos(0.0f, 0.0f);
-    Vector2 avg_prox_pos(0.0f, 0.0f);
-    Vector2 closest_position;
-    float closest_distance = BOID_RANGE;
-    int n_prox_boids = 0;
+    Vector2 avg_pos;
+    Vector2 avg_neighbour_pos;
+    Vector2 avg_neighbour_vel;
+    int n_neighbours = 0;
 
     //for (int i = 0; i < boids->size(); i++) {
         //Boid* boid = boids->at(i);
@@ -37,51 +37,73 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         float distance = (position - pos).magnitude();
 
         if (distance < BOID_RANGE) {
-            avg_prox_pos += pos;
-            n_prox_boids++;
+            avg_neighbour_pos += pos;
+            avg_neighbour_pos += boid->velocity;
+            n_neighbours++;
             proximal_boids.emplace_back(boid);
-
-            if (distance < closest_distance) {
-                closest_distance = distance;
-                closest_position = pos;
-            }
         }
     }
 
-    acceleration = Vector2::Zero();
+    steer = Vector2::Zero();
 
-    // if (n_prox_boids > 0) {
-    //     avg_prox_pos /= n_prox_boids;
-        
-    //     Vector2 offset = avg_prox_pos - position;
-    //     float dist_from_avg = offset.magnitude();
-        
-    //     if (dist_from_avg > BOID_RANGE * COHESION_THRESHOLD) { // cohesion
-    //         acceleration += offset.normalised() * delta;
-    //     }
-    //     else if (closest_distance < BOID_RANGE * ALIGNMENT_THRESHOLD) { // alignment
-            
-    //     }
-    //     else { // seperation
-    //         acceleration += -offset.normalised() * delta;
-    //     }
-    // }
+    Vector2 seek;
+    Vector2 seperation;
+    Vector2 alignment;
+    Vector2 cohesion;
 
-    acceleration += (target - position).normalised() * delta * ACCELERATION_MULTIPLIER;
+    if (n_neighbours > 0) {
+        avg_neighbour_pos /= n_neighbours;
+        avg_neighbour_vel /= n_neighbours;
 
-    velocity += acceleration;
+        for (Boid* boid : proximal_boids) {
+            Vector2 other_pos = boid->position;
+            Vector2 direction = (position - other_pos);
+            float distance = direction.magnitude();
 
-    if (velocity.magnitude() > MAX_SPEED) {
-        velocity = velocity.normalised() * MAX_SPEED;
+            if (distance < SEPERATION_THRESHOLD && distance > 0) {
+                seperation += direction.normalised() / distance;
+            }
+        }
+
+        seperation *= SEPERATION_STRENGTH;
+
+        alignment = (avg_neighbour_vel - velocity) * ALIGNMENT_STRENGTH;
+        cohesion = (avg_neighbour_pos - position) * COHESION_STRENGTH;
+    }
+
+    Vector2 seek_direction = (goal - position);
+    float seek_distance = seek_direction.magnitude();
+
+    if (seek_distance > 0) {
+        seek_direction.normalise();
+
+        if (seek_distance < ARRIVAL_RADIUS) {
+            seek_direction *= seek_distance / ARRIVAL_RADIUS;
+        }
+
+        seek = (seek_direction * MAX_SPEED - velocity) * SEEK_STRENGTH;
+    }
+
+    steer += (seperation + alignment + cohesion + seek) * delta;
+
+    if (steer.magnitude() > MAX_STEER) {
+        steer = steer.normalised() * MAX_STEER;
     }
 }
 
 void Boid::Update(const float delta) {
-    if (velocity.magnitude() == 0) return;
+    velocity += steer;
+    float speed = velocity.magnitude();
+
+    if (speed > MAX_SPEED) {
+        velocity = velocity.normalised() * MAX_SPEED;
+    }
+
+    if (speed == 0) return;
 
     float dot = Vector2::Dot(velocity, Vector2::Left());
     float cross = Vector2::Cross(velocity, Vector2::Left());
-    float cosine = dot / velocity.magnitude();
+    float cosine = std::clamp(dot / speed, -1.0f, 1.0f);
     float angle = std::acos(cosine);
 
     if (cross > 0) angle = TwoPI - angle;
