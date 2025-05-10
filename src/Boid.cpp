@@ -46,6 +46,7 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
     steer = Vector2::Zero();
 
     Vector2 seek;
+    Vector2 flee;
     Vector2 seperation;
     Vector2 alignment;
     Vector2 cohesion;
@@ -59,7 +60,7 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
             Vector2 direction = (position - other_pos);
             float distance = direction.magnitude();
 
-            if (distance < SEPERATION_THRESHOLD && distance > 0) {
+            if (distance < SEPERATION_RADIUS && distance > 0) {
                 seperation += direction.normalised() / distance;
             }
         }
@@ -83,7 +84,19 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         seek = (seek_direction * MAX_SPEED - velocity) * SEEK_STRENGTH;
     }
 
-    steer += (seperation + alignment + cohesion + seek) * delta;
+    for (Obstacle* obstacle : *obstacles) {
+        Vector2 obstacle_pos = obstacle->position;
+        Vector2 direction = (position - obstacle_pos);
+        float distance = direction.magnitude() - obstacle->radius;
+
+        if (distance > FLEE_RADIUS) continue;
+
+        flee += direction.normalised() * MAX_SPEED * (obstacle->radius / distance) - velocity;
+    }
+
+    flee *= FLEE_RADIUS;
+
+    steer += (seek + flee + seperation + alignment + cohesion) * delta;
 
     if (steer.magnitude() > MAX_STEER) {
         steer = steer.normalised() * MAX_STEER;
@@ -120,8 +133,6 @@ void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2&
 
     Vector2 tail1 = front + tail_length * Vector2(std::cos(t1o), std::sin(t1o));
     Vector2 tail2 = front + tail_length * Vector2(std::cos(t2o), std::sin(t2o));
-
-    std::cout << offset << std::endl;
 
     front += offset;
     back += offset;
