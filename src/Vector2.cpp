@@ -19,6 +19,19 @@ float Vector2::Cross(const Vector2& v1, const Vector2& v2) {
     return v1.x * v2.y - v1.y * v2.x;
 }
 
+float Vector2::AngleBetween(const Vector2& v1, const Vector2& v2) {
+    float dot = Vector2::Dot(v1, v2);
+    float mag_prod = v1.magnitude() * v2.magnitude();
+
+    if (mag_prod == 0.0f) return 0.0f;
+
+    return std::acos(dot / mag_prod);
+}
+
+Vector2 Vector2::FromAngle(const float angle) {
+    return Vector2(std::cos(angle), std::sin(angle));
+}
+
 Vector2& Vector2::operator*=(const float n) {
     x *= n;
     y *= n;

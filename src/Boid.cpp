@@ -71,8 +71,19 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         cohesion = (avg_neighbour_pos - position) * COHESION_STRENGTH;
     }
 
+    // find the two angles that point towards tangential positions on the orbit radius
+    // go towards the one which is closest to the current angle
+    // this might need to account for alignment
+
     Vector2 seek_direction = (goal - position);
     float seek_distance = seek_direction.magnitude();
+
+    // float angle_to_centre = Vector2::AngleBetween(seek_direction, Vector2::Left());
+    // float tangent_angles[2] = { angle_to_centre + PI / 2, angle_to_centre - PI / 2 };
+
+    // float angle = std::min(orientation - tangent_angles[0], orientation - tangent_angles[1]);
+
+    //std::cout << angle << std::endl;
 
     if (seek_distance > 0) {
         seek_direction.normalise();
@@ -84,17 +95,21 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         seek = (seek_direction * MAX_SPEED - velocity) * SEEK_STRENGTH;
     }
 
-    for (Obstacle* obstacle : *obstacles) {
-        Vector2 obstacle_pos = obstacle->position;
-        Vector2 direction = (position - obstacle_pos);
-        float distance = direction.magnitude() - obstacle->radius;
 
-        if (distance > FLEE_RADIUS) continue;
-
-        flee += direction.normalised() * MAX_SPEED * (obstacle->radius / distance) - velocity;
+    if (velocity.magnitude() != 0) {
+        for (Obstacle* obstacle : *obstacles) {
+            Vector2 obstacle_pos = obstacle->position;
+            Vector2 next_pos = position + velocity.normalised() * FLEE_LOOK_AHEAD;
+            Vector2 direction = (next_pos - obstacle_pos);
+            float distance = direction.magnitude() - obstacle->radius;
+    
+            //if (distance > FLEE_RADIUS) continue;
+    
+            flee += direction.normalised() * MAX_SPEED * (obstacle->radius + 0.1f / distance) - velocity;
+        }
     }
 
-    flee *= FLEE_RADIUS;
+    flee *= FLEE_STRENGTH;
 
     steer += (seek + flee + seperation + alignment + cohesion) * delta;
 

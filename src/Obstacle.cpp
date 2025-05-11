@@ -4,8 +4,8 @@
 #include "Obstacle.h"
 
 Obstacle::Obstacle() {
-    position.x = (float) std::rand() / RAND_MAX * 1.8f - 0.9f;
-    position.y = (float) std::rand() / RAND_MAX * 1.8f - 0.9f;
+    position.x = (float) std::rand() / RAND_MAX * - 0.5f;
+    position.y = (float) std::rand() / RAND_MAX * - 0.5f;
 
     radius = 0.1f;
 

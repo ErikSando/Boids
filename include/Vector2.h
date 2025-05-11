@@ -12,13 +12,16 @@ class Vector2 {
     Vector2(float n) : x(n), y(n) {}
     Vector2(float x, float y) : x(x), y(y) {}
 
-    inline float magnitude() { return sqrt(x * x + y * y); }
+    inline float magnitude() const { return sqrt(x * x + y * y); }
 
     Vector2 normalised();
     void normalise();
 
     static float Dot(const Vector2& v1, const Vector2& v2);
     static float Cross(const Vector2& v1, const Vector2& v2);
+    static float AngleBetween(const Vector2& v1, const Vector2& v2);
+
+    static Vector2 FromAngle(const float angle);
 
     Vector2& operator*=(const float n);
     Vector2& operator/=(const float n);
