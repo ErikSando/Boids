@@ -4,8 +4,8 @@
 #include "Obstacle.h"
 
 Obstacle::Obstacle() {
-    position.x = (float) std::rand() / RAND_MAX * - 0.5f;
-    position.y = (float) std::rand() / RAND_MAX * - 0.5f;
+    position.x = (float) std::rand() / RAND_MAX - 0.5f;
+    position.y = (float) std::rand() / RAND_MAX - 0.5f;
 
     radius = 0.1f;
 
@@ -41,26 +41,19 @@ void Obstacle::CalculateVertices() {
         }
     }
 
-    for (int i = 0; i < TRIANGLES_PER_QUADRANT * 4; i++) {
+    for (int i = 0; i < NUM_INDICES / 3; i++) {
         indices[i * 3] = 0;
         indices[i * 3 + 1] = i + 1;
-        indices[i * 3 + 2] = std::max((i + 2) % (TRIANGLES_PER_QUADRANT * 4 + 1), 1);
+        indices[i * 3 + 2] = std::max((i + 2) % (NUM_INDICES / 3 + 1), 1);
     }
 }
 
 void Obstacle::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2& offset) {
-    float offset_vertices[TRIANGLES_PER_QUADRANT * 12 + 3];
-
-    unsigned int i[] = {
-        0, 1, 2,
-        0, 2, 3,
-        0, 3, 4,
-        0, 4, 1
-    };
+    float offset_vertices[NUM_VERTICES];
 
     std::copy(std::begin(vertices), std::end(vertices), offset_vertices);
 
-    for (int i = 0; i < TRIANGLES_PER_QUADRANT * 12 + 3; i += 3) {
+    for (int i = 0; i < NUM_VERTICES; i += 3) {
         offset_vertices[i] += offset.x;
         offset_vertices[i + 1] += offset.y;
     }
@@ -71,10 +64,10 @@ void Obstacle::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vect
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(offset_vertices), offset_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(offset_vertices), offset_vertices, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
-    glDrawElements(GL_TRIANGLES, TRIANGLES_PER_QUADRANT * 12, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, 0);
 }

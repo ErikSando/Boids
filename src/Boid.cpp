@@ -7,8 +7,8 @@
 #include "Program.h"
 
 Boid::Boid() {
-    position.x = (float) std::rand() / RAND_MAX * 2.0f - 1.0f;
-    position.y = (float) std::rand() / RAND_MAX * 2.0f - 1.0f;
+    position.x = (float) std::rand() / RAND_MAX * 1.8f - 0.9f;
+    position.y = (float) std::rand() / RAND_MAX * 1.8f - 0.9f;
 }
 
 Boid::~Boid() {
@@ -25,8 +25,6 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
     Vector2 avg_neighbour_vel;
     int n_neighbours = 0;
 
-    //for (int i = 0; i < boids->size(); i++) {
-        //Boid* boid = boids->at(i);
     for (Boid* boid : *boids) {
         if (boid == this) continue;
 
@@ -71,19 +69,8 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         cohesion = (avg_neighbour_pos - position) * COHESION_STRENGTH;
     }
 
-    // find the two angles that point towards tangential positions on the orbit radius
-    // go towards the one which is closest to the current angle
-    // this might need to account for alignment
-
     Vector2 seek_direction = (goal - position);
     float seek_distance = seek_direction.magnitude();
-
-    // float angle_to_centre = Vector2::AngleBetween(seek_direction, Vector2::Left());
-    // float tangent_angles[2] = { angle_to_centre + PI / 2, angle_to_centre - PI / 2 };
-
-    // float angle = std::min(orientation - tangent_angles[0], orientation - tangent_angles[1]);
-
-    //std::cout << angle << std::endl;
 
     if (seek_distance > 0) {
         seek_direction.normalise();
@@ -95,21 +82,23 @@ void Boid::UpdateVelocity(const float delta, Vector2& mouse_pos, std::vector<Boi
         seek = (seek_direction * MAX_SPEED - velocity) * SEEK_STRENGTH;
     }
 
+    int n_obstacles = 0;
 
     if (velocity.magnitude() != 0) {
         for (Obstacle* obstacle : *obstacles) {
+            n_obstacles++;
+
             Vector2 obstacle_pos = obstacle->position;
             Vector2 next_pos = position + velocity.normalised() * FLEE_LOOK_AHEAD;
             Vector2 direction = (next_pos - obstacle_pos);
             float distance = direction.magnitude() - obstacle->radius;
-    
-            //if (distance > FLEE_RADIUS) continue;
     
             flee += direction.normalised() * MAX_SPEED * (obstacle->radius + 0.1f / distance) - velocity;
         }
     }
 
     flee *= FLEE_STRENGTH;
+    if (n_obstacles != 0) flee /= n_obstacles;
 
     steer += (seek + flee + seperation + alignment + cohesion) * delta;
 
@@ -166,16 +155,16 @@ void Boid::Render(unsigned int VAO, unsigned int VBO, unsigned int EBO, Vector2&
         0, 3, 2
     };
 
-    //glBindVertexArray(VAO);
+    glBindVertexArray(VAO);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

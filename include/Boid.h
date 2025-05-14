@@ -5,7 +5,7 @@
 #include "Obstacle.h"
 #include "Vector2.h"
 
-#define BOID_RANGE 0.8
+#define BOID_RANGE 0.4
 #define ARRIVAL_RADIUS 0.3
 #define SEEK_STRENGTH 0.5
 #define ORBIT_RADIUS 0.15
@@ -13,8 +13,8 @@
 #define FLEE_STRENGTH 0.3
 #define FLEE_LOOK_AHEAD 0.15
 #define SEPERATION_RADIUS 0.2
-#define MAX_SPEED 0.3
-#define MAX_STEER 0.025
+#define MAX_SPEED 0.4
+#define MAX_STEER 0.04
 #define SEPERATION_STRENGTH 0.0015
 #define ALIGNMENT_STRENGTH 0.001
 #define COHESION_STRENGTH 0.001

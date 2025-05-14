@@ -1,4 +1,3 @@
-//#include <ctime>
 #include <iostream>
 #include <random>
 
@@ -14,7 +13,7 @@ int main() {
     Shader boid_shader("assets/shaders/boid_vs.glsl", "assets/shaders/boid_fs.glsl");
     Shader obstacle_shader("assets/shaders/obstacle_vs.glsl", "assets/shaders/obstacle_fs.glsl");
 
-    program.InitBoids(20, 1, boid_shader, obstacle_shader);
+    program.InitEntities(20, 1, boid_shader, obstacle_shader);
     program.Run();
 
     return 0;

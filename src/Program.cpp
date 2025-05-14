@@ -43,6 +43,9 @@ void Program::InitWindow(const char* title, int width, int height) {
         return;
     }
 
+    // disable V-Sync
+    //glfwSwapInterval(0);
+
     glViewport(0, 0, width, height);
     
     input = new InputHandler(window);
@@ -50,7 +53,7 @@ void Program::InitWindow(const char* title, int width, int height) {
     window_setup = true;
 }
 
-void Program::InitBoids(int initial_boids, int initial_obstacles, Shader& boid_shader, Shader& obstacle_shader) {
+void Program::InitEntities(int initial_boids, int initial_obstacles, Shader& boid_shader, Shader& obstacle_shader) {
     if (boids_setup) {
         std::cout << "Boids already initialised" << std::endl;
         return;
