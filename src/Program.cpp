@@ -47,8 +47,6 @@ void Program::InitWindow(const char* title, int width, int height) {
     //glfwSwapInterval(0);
 
     glViewport(0, 0, width, height);
-    
-    input = new InputHandler(window);
 
     window_setup = true;
 }
@@ -69,8 +67,6 @@ void Program::Destroy() {
     if (boids_setup) delete boid_handler;
 
     if (window_setup) {
-        delete input;
-
         glfwDestroyWindow(window);
         glfwTerminate();
     }

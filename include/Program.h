@@ -6,7 +6,6 @@
 #include "GLFW/glfw3.h"
 
 #include "BoidHandler.h"
-#include "Input.h"
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -28,7 +27,6 @@ class Program {
     private:
 
     GLFWwindow* window;
-    InputHandler* input;
     BoidHandler* boid_handler;
 
     bool window_setup = false;
